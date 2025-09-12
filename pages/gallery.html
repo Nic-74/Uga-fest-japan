@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gallery — Uga Fest Japan</title>
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/styles.min.css">
+  <link rel="stylesheet" href="../assets/gallery.css">
+  <script src="../assets/translations.js"></script>
+  
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="../index.html" class="brand" aria-label="Uga Fest Japan Home">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div>Uga Fest Japan</div>
+          <div class="muted" style="font-size:.85rem">Sports & Music Festival</div>
+        </div>
+      </a>
+      <nav aria-label="Primary">
+        <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+        <ul id="menu">
+          <li><a href="../index.html" data-translate="Home">Home</a></li>
+          <li><a href="about.html" data-translate="About">About</a></li>
+          <li><a href="program.html" data-translate="Program">Program</a></li>
+          <li><a href="gallery.html" class='active' data-translate="Gallery">Gallery</a></li>
+          <li><a href="partners.html" data-translate="Partners">Partners</a></li>
+          <li><a href="faqs.html" data-translate="FAQs">FAQs</a></li>
+          <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-cta">
+        <button id="languageToggle" class="btn secondary" aria-label="Switch to Japanese">
+          <span class="ic">🌍</span> JA
+        </button>
+        <a class="btn" href="tickets.html" aria-label="Buy Tickets">Buy Tickets</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <span class="tag" data-translate="Gallery">Gallery</span>
+      <h1 class="h1" data-translate="Moments from previous editions">Moments from previous editions</h1>
+      <p class="muted"data-translate="Click any photo to start the slideshow and browse our complete collection">Click any photo to start the slideshow and browse our complete collection.</p>
+      
+      <div class="gallery" id="gallery">
+        <!-- Initial 9 photos -->
+        <img src="../assets/photos/tiny/tiny/01_rainy_match.webp" alt="Festival moment" data-index="0">
+        <img src="../assets/photos/tiny/tiny/02_live_performance.webp" alt="Festival moment" data-index="1">
+        <img src="../assets/photos/tiny/tiny/03_ugandan_food.webp" alt="Festival moment" data-index="2">
+        <img src="../assets/photos/tiny/tiny/04_uganda_flag.webp" alt="Festival moment" data-index="3">
+        <img src="../assets/photos/tiny/tiny/05_team_warmup.webp" alt="Festival moment" data-index="4">
+        <img src="../assets/photos/tiny/tiny/06_cindy_poster.webp" alt="Festival moment" data-index="5">
+        <img src="../assets/photos/tiny/tiny/07_crowd1.webp" alt="Festival moment" data-index="6">
+        <img src="../assets/photos/tiny/tiny/08_crowd2.webp" alt="Festival moment" data-index="7">
+        <img src="../assets/photos/tiny/tiny/09_ugafest_poster.webp" alt="Festival moment" data-index="8">
+        
+        <!-- Hidden photos -->
+        <img src="../assets/photos/tiny/tiny/10_indoor_scene.webp" alt="Festival moment" data-index="9" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/1.jpeg" alt="Festival moment" data-index="10" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/2.jpeg" alt="Festival moment" data-index="11" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/3.jpeg" alt="Festival moment" data-index="12" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/4.jpeg" alt="Festival moment" data-index="13" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/5.jpeg" alt="Festival moment" data-index="14" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/6.jpeg" alt="Festival moment" data-index="15" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/7.jpeg" alt="Festival moment" data-index="16" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/8.jpeg" alt="Festival moment" data-index="17" class="gallery-hidden">
+        <img src="../assets/photos/tiny/tiny/9.jpeg" alt="Festival moment" data-index="18" class="gallery-hidden">
+      </div>
+
+      <div class="show-more-btn">
+        <button id="showMoreBtn" class="btn"data-translate="Show More Pictures">Show More Pictures</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slideshow Modal -->
+  <div id="slideshow" class="slideshow-modal">
+    <button class="slide-close" onclick="closeSlideshow()">&times;</button>
+    <div class="slideshow-container">
+      <button class="slide-nav slide-prev" onclick="changeSlide(-1)">&#10094;</button>
+      <button class="slide-nav slide-next" onclick="changeSlide(1)">&#10095;</button>
+      
+      <div id="slides"></div>
+      
+      <div class="slide-counter" id="counter">1 / 19</div>
+    </div>
+  </div>
+
+  <footer class="section-sm">
+    <div class="container foot-grid">
+      <div>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div>Uga Fest Japan</div>
+            <div class="muted" style="font-size:.85rem" data-translate="Celebrating Uganda's Independence">Celebrating Uganda's Independence</div>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:10px">© <span id="year"></span> Uga Fest Japan. All rights reserved.</p>
+      </div>
+      <div class="foot-col">
+        <div class="h3" data-translate="Explore">Explore</div>
+        <a href="program.html" data-translate="Program">Program</a>
+        <a href="tickets.html" data-translate="Tickets">Tickets</a>
+        <a href="partners.html" data-translate="Partners">Partners</a>
+      </div>
+      <div class="foot-col">
+        <div class="h3" data-translate="Help">Help</div>
+        <a href="faqs.html" data-translate="FAQs">FAQs</a>
+        <a href="contact.html" data-translate="Contact">Contact</a>
+        <a href="privacy.html" data-translate="Privacy">Privacy</a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" aria-label="Back to top" title="Back to top"
+    style="position:fixed;right:16px;bottom:16px;display:none;border:1px solid var(--line);background:#141424;color:var(--text);padding:.7rem .9rem;border-radius:999px;box-shadow:var(--shadow)">↑</button>
+
+  <script src="../assets/main.min.js"></script>
+  <script src="../assets/gallery.js"></script>
+</body>
+</html>

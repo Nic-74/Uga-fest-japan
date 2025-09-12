@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact — Uga Fest Japan</title>
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/styles.min.css">
+  <script src="../assets/translations.js"></script>
+
+  <!-- Page-local polish: professional contact layout -->
+  <style>
+    /* Layout */
+    .contact-grid{display:grid;gap:20px;grid-template-columns:1fr 1fr}
+    @media (max-width:1024px){.contact-grid{grid-template-columns:1fr}}
+    @media (max-width:680px){.contact-grid{grid-template-columns:1fr}}
+    .stack{display:grid;gap:12px}
+
+    /* Info list */
+    .details{display:grid;gap:16px;margin-top:12px}
+    .detail-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+    .detail-row:last-child{border-bottom:none}
+    .icon{width:20px;height:20px;flex:0 0 20px;stroke:var(--muted)}
+    .label{color:var(--muted);font-size:0.9rem;margin-top:2px}
+
+    /* Social icons */
+    .social-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+    .social-item{text-align:center;padding:16px;border:1px solid var(--line);border-radius:12px;background:hsl(240, 9%, 98%);transition:all 0.2s ease}
+    .social-item:hover{background:#a7c8eb;transform:translateY(-2px)}
+    .social-icon{width:32px;height:32px;margin:0 auto 8px;fill:var(--accent)}
+    .social-name{color:var(--text);font-weight:600}
+
+    /* Form */
+    .field{display:grid;gap:6px}
+    .input, .textarea{
+      width:100%;background:hsl(240, 9%, 98%);color:var(--text);
+      border:1px solid var(--line);border-radius:12px;padding:.9rem;
+      font-size:16px; /* iOS zoom fix */
+    }
+    .textarea{min-height:350px;resize:vertical}
+
+    /* Subtle card headers */
+    .tile .subtle{color:var(--muted);font-size:.15rem;margin-top:4px}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a href="../index.html" class="brand" aria-label="Uga Fest Japan Home">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div>Uga Fest Japan</div>
+          <div class="muted" style="font-size:.85rem">Sports &amp; Music Festival</div>
+        </div>
+      </a>
+      <nav aria-label="Primary">
+        <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+        <ul id="menu">
+          <li><a href="../index.html" data-translate="Home">Home</a></li>
+          <li><a href="about.html" data-translate="About">About</a></li>
+          <li><a href="program.html" data-translate="Program">Program</a></li>
+          <li><a href="gallery.html" data-translate="Gallery">Gallery</a></li>
+          <!--<li><a href="tickets.html" data-translate="Tickets">Tickets</a></li>-->
+          <li><a href="partners.html" data-translate="Partners">Partners</a></li>
+          <li><a href="faqs.html" data-translate="FAQs">FAQs</a></li>
+          <li><a href="contact.html" class='active' data-translate="Contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-cta">
+        <button id="languageToggle" class="btn secondary" aria-label="Switch to Japanese">
+          <span class="ic">🌐</span> JA
+        </button>
+        <a class="btn" href="tickets.html" aria-label="Buy Tickets" data-translate="Buy Tickets">Buy Tickets</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contact -->
+  <section class="section">
+    <div class="container">
+      <span class="tag" data-translate="Contact">Contact</span>
+      <h1 class="h1" data-translate="Get in touch">Get in touch</h1>
+      <p class="subtle muted" data-translate="We aim to reply within 24—48 hours.">We aim to reply within 24—48 hours.</p>
+
+      <div class="contact-grid" style="margin-top:24px">
+        <!-- Column 1: Contact details -->
+        <aside class="tile">
+          <h3 class="h3" data-translate="Reach us">Reach us</h3>
+          <div class="details">
+            <div class="detail-row">
+              <!-- phone icon -->
+              <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v2a2 2 0 0 1-2.18 2 19.75 19.75 0 0 1-8.59-3.07 19.5 19.5 0 0 1-6-6A19.75 19.75 0 0 1 2.1 4.2 2 2 0 0 1 4.11 2h2a2 2 0 0 1 2 1.72c.12.9.31 1.77.57 2.61a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.47-1.14a2 2 0 0 1 2.11-.45c.84.26 1.71.45 2.61.57A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div>
+                <div><a href="tel:+819017583450">+81 90-1758-3450</a></div>
+                <div class="label" data-translate="Phone">Phone</div>
+              </div>
+            </div>
+            <div class="detail-row">
+              <!-- mail icon -->
+              <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.5"/><path d="m22 6-10 7L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div>
+                <div><a href="mailto:aggresius.kayimbye@gmail.com">aggresius.kayimbye@gmail.com</a></div>
+                <div class="label" data-translate="Email">Email</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Media Section -->
+          <div style="margin-top:20px">
+            <h4 class="h3" data-translate="Social">Social</h4>
+            <div class="social-grid">
+              <a href="https://www.instagram.com/uga_fest_?igsh=MWQxdnZ6azdyNnlzZw%3D%3D&utm_source=qr" target="_blank" rel="noopener" class="social-item">
+                <!-- Instagram icon -->
+                <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <div class="social-name" data-translate="Instagram">Instagram</div>
+              </a>
+              <a href="https://www.tiktok.com/@ugafestjapan?_t=ZS-8zWEA0nl5r6&_r=1" target="_blank" rel="noopener" class="social-item">
+                <!-- TikTok icon -->
+                <svg class="social-icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                <div class="social-name" data-translate="TikTok">TikTok</div>
+              </a>
+            </div>
+          </div>
+
+          <div class="actions" style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="btn" href="tickets.html" data-translate="Buy Tickets">Buy Tickets</a>
+            <a class="btn secondary" href="faqs.html" data-translate="Read FAQs">Read FAQs</a>
+          </div>
+        </aside>
+
+        <!-- Column 2: Form 
+        <section class="tile stack" role="form" aria-label="Inquiry form">
+          <h3 class="h3" data-translate="Message us">Message us</h3>
+          <p class="subtle" data-translate="Use the Google Form or the quick email form.">Use the Google Form or the quick email form.</p>　　　-->
+
+          <!-- Quick email form -->
+          <form class="stack" onsubmit="event.preventDefault(); window.location.href='mailto:aggresius.kayimbye@gmail.com?subject=Uga%20Fest%20Inquiry&body='+encodeURIComponent(document.getElementById('msg').value);">
+            <div class="field">
+              <label class="label" for="msg" data-translate="Your message">Your message</label>
+              <textarea class="textarea" id="msg" required data-translate="How can we help?" placeholder="How can we help?"></textarea>
+            </div>
+            <button class="btn" type="submit" data-translate="Send email">Send email</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="section-sm">
+    <div class="container foot-grid">
+      <div>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div>Uga Fest Japan</div>
+            <div class="muted" style="font-size:.85rem" data-translate="Celebrating Uganda's Independence">Celebrating Uganda's Independence</div>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:10px">© <span id="year"></span> Uga Fest Japan. All rights reserved.</p>
+      </div>
+      <div class="foot-col">
+        <div class="h3" data-translate="Explore">Explore</div>
+        <a href="program.html" data-translate="Program">Program</a>
+        <a href="tickets.html" data-translate="Tickets">Tickets</a>
+        <a href="partners.html" data-translate="Partners">Partners</a>
+      </div>
+      <div class="foot-col">
+        <div class="h3" data-translate="Help">Help</div>
+        <a href="faqs.html" data-translate="FAQs">FAQs</a>
+        <a href="contact.html" data-translate="Contact">Contact</a>
+        <a href="privacy.html" data-translate="Privacy">Privacy</a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" aria-label="Back to top" title="Back to top"
+    style="position:fixed;right:16px;bottom:16px;display:none;border:1px solid var(--line);background:#141424;color:var(--text);padding:.7rem .9rem;border-radius:999px;box-shadow:var(--shadow)">↑</button>
+
+  <script src="../assets/main.min.js"></script>
+</body>
+</html>

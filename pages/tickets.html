@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-translate="Tickets">Tickets — Uga Fest Japan</title>
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/styles.min.css">
+  <link rel="stylesheet" href="../assets/tickets.css">
+  <script src="../assets/translations.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a href="../index.html" class="brand" aria-label="Uga Fest Japan Home">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div>Uga Fest Japan</div>
+          <div class="muted" style="font-size:.85rem">Sports &amp; Music Festival</div>
+        </div>
+      </a>
+      <nav aria-label="Primary">
+        <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+        <ul id="menu">
+          <li><a href="../index.html" data-translate="Home">Home</a></li>
+          <li><a href="about.html" data-translate="About">About</a></li>
+          <li><a href="program.html" data-translate="Program">Program</a></li>
+          <li><a href="gallery.html" data-translate="Gallery">Gallery</a></li>
+          <li><a href="partners.html" data-translate="Partners">Partners</a></li>
+          <li><a href="faqs.html" data-translate="FAQs">FAQs</a></li>
+          <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-cta">
+        <button id="languageToggle" class="btn secondary" aria-label="Switch to Japanese">
+          <span class="ic">🌍</span> JA
+        </button>
+        <a class="btn" href="tickets.html" aria-label="Buy Tickets" data-translate="Buy Tickets">Buy Tickets</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tickets -->
+  <section class="section">
+    <div class="container grid pricing">
+      <div class="tile">
+        <span class="tag" data-translate="Tickets">Tickets</span>
+        <h1 class="h1" data-translate="Choose your pass">Choose your pass</h1>
+        <p class="muted" data-translate="Secure your tickets early. Limited VIP passes available.">Secure your tickets early. Limited VIP passes available.</p>
+
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px">
+          <div class="tile" style="padding:14px">
+            <div class="kicker" data-translate="Ordinary">Ordinary</div>
+            <div class="price"><span class="amt">¥10,000</span><span class="badge" data-translate="General">General</span></div>
+            <p class="muted" data-translate="General access • Concert night">General access • Concert night</p>
+            <button class="btn buy-ticket-btn" data-ticket-type="ordinary" data-price="10000" aria-label="Buy Ordinary Ticket">Buy Ordinary</button>
+          </div>
+
+          <div class="tile" style="padding:14px">
+            <div class="kicker" data-translate="VIP">VIP</div>
+            <div class="price"><span class="amt">¥20,000</span><span class="badge" data-translate="Perks">Perks</span></div>
+            <p class="muted" data-translate="Priority seating • Exclusive bar • Meet & greet">Priority seating • Exclusive bar • Meet &amp; greet</p>
+            <button class="btn buy-ticket-btn" data-ticket-type="vip" data-price="20000" aria-label="Buy VIP Ticket">Buy VIP</button>
+          </div>
+        </div>
+
+        <div class="tile" style="margin-top:12px">
+          🎫 <strong data-translate="Tip:">Tip:</strong> <span data-translate="Early purchase recommended — Uga Fest sells out fast!">Early purchase recommended — Uga Fest sells out fast!</span>
+        </div>
+      </div>
+
+      <div class="tile">
+        <h3 class="h3" data-translate="Vendors & Performers">Vendors &amp; Performers</h3>
+        <p class="muted" data-translate="Interested in a stall or stage time? Apply below.">Interested in a stall or stage time? Apply below.</p>
+        <div class="actions">
+          <a class="btn secondary" href="mailto:aggresius.kayimbye@gmail.com?subject=Vendor Application" aria-label="Vendor application">Vendor application</a>
+          <a class="btn secondary" href="mailto:aggresius.kayimbye@gmail.com?subject=Performer Application" aria-label="Performer application">Performer application</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="payment-modal">
+    <div class="payment-container">
+      <div class="payment-header">
+        <h3 class="h3">Complete Your Purchase</h3>
+        <button class="payment-close" onclick="closePaymentModal()">&times;</button>
+      </div>
+      
+      <div class="payment-content">
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <h4>Order Summary</h4>
+          <div class="summary-row summary-total">
+            <span id="ticketTypeName">VIP Ticket</span>
+            <span id="ticketPrice">¥20,000</span>
+          </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="form-group">
+          <label class="form-label">Choose Payment Method</label>
+          <div class="payment-methods">
+            <div class="payment-method" data-method="paypay">
+              <div class="payment-icon paypay-icon">
+                <img src="../assets/paypay-logo.png" alt="PayPay Logo">
+              </div>
+              <div class="payment-info">
+                <div class="payment-name">PayPay</div>
+                <div class="payment-desc">Quick and secure mobile payment</div>
+              </div>
+            </div>
+
+            <div class="payment-method" data-method="card">
+              <div class="payment-icon card-icon">💳</div>
+              <div class="payment-info">
+                <div class="payment-name">Credit/Debit Card</div>
+                <div class="payment-desc">Visa, Mastercard, JCB accepted</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Form (hidden by default) -->
+        <div id="cardForm" class="card-form">
+          <div class="form-group">
+            <label class="form-label">Cardholder Name</label>
+            <input type="text" class="form-input" placeholder="John Doe" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" required>
+          </div>
+          
+          <div class="form-group">
+            <div class="card-row">
+              <div>
+                <label class="form-label">Expiry Date</label>
+                <input type="text" class="form-input" placeholder="MM/YY" maxlength="5" required>
+              </div>
+              <div>
+                <label class="form-label">CVV</label>
+                <input type="text" class="form-input" placeholder="123" maxlength="3" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket Delivery Options -->
+        <div class="form-group">
+          <label class="form-label">Ticket Delivery</label>
+          <div class="delivery-options">
+            <div class="delivery-method selected" data-delivery="email">
+              <div class="delivery-title">
+                📧 Email Delivery (Recommended)
+              </div>
+              <div class="delivery-desc">
+                Instant delivery to your email. Show QR code on mobile device at venue.
+              </div>
+            </div>
+            
+            <div class="delivery-method" data-delivery="pickup">
+              <div class="delivery-title">
+                🎫 Venue Pickup
+              </div>
+              <div class="delivery-desc">
+                Collect physical tickets at will-call desk 1 hour before event.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="your@email.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Phone Number (Optional)</label>
+          <input type="tel" class="form-input" placeholder="+81 90-1234-5678">
+        </div>
+
+        <button class="proceed-btn" onclick="processPayment()" disabled>
+          Complete Purchase
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="success-modal">
+    <div class="success-content">
+      <div class="success-icon">✓</div>
+      <h3>Payment Successful!</h3>
+      <p class="muted" style="margin: 16px 0;">
+        Your ticket has been sent to your email. Check your inbox and spam folder.
+      </p>
+      <p class="muted" style="margin-bottom: 20px;">
+        Order ID: #UF2025-<span id="orderId"></span>
+      </p>
+      <button class="btn" onclick="closeSuccessModal()">Done</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="section-sm">
+    <div class="container foot-grid">
+      <div>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div>Uga Fest Japan</div>
+            <div class="muted" style="font-size:.85rem" data-translate="Celebrating Uganda's Independence">Celebrating Uganda's Independence</div>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:10px">© <span id="year"></span> Uga Fest Japan. All rights reserved.</p>
+      </div>
+      <div class="foot-col">
+        <div class="h3" data-translate="Explore">Explore</div>
+        <a href="program.html" data-translate="Program">Program</a>
+        <a href="tickets.html" data-translate="Tickets">Tickets</a>
+        <a href="partners.html" data-translate="Partners">Partners</a>
+      </div>
+      <div class="foot-col">
+        <div class="h3" data-translate="Help">Help</div>
+        <a href="faqs.html" data-translate="FAQs">FAQs</a>
+        <a href="contact.html" data-translate="Contact">Contact</a>
+        <a href="privacy.html" data-translate="Privacy">Privacy</a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" aria-label="Back to top" title="Back to top"
+    style="position:fixed;right:16px;bottom:16px;display:none;border:1px solid var(--line);background:#141424;color:var(--text);padding:.7rem .9rem;border-radius:999px;box-shadow:var(--shadow)">↑</button>
+
+  <script src="../assets/main.min.js"></script>
+  <script src="../assets/tickets.js"></script>
+</body>
+</html>

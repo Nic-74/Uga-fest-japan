@@ -1,0 +1,146 @@
+/* Gallery Styles - Extracted from gallery.html */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.gallery img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gallery img:hover {
+  transform: scale(1.5);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  position: relative;
+}
+
+.gallery-hidden {
+  display: none;
+}
+
+.show-more-btn {
+  text-align: center;
+  margin: 32px 0;
+}
+
+/* Slideshow Modal */
+.slideshow-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.slideshow-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.slide {
+  display: none;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slide img {
+  max-width: 85vw;
+  max-height: 80vh;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  object-fit: contain;
+}
+
+.slide-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 15px 18px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.slide-nav:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slide-prev { left: 20px; }
+.slide-next { right: 20px; }
+
+.slide-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.slide-close:hover {
+  background: rgba(255, 48, 64, 0.8);
+}
+
+.slide-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .gallery img {
+    height: 200px;
+  }
+  
+  .slide img {
+    max-width: 95vw;
+    max-height: 75vh;
+  }
+
+  .slide-nav {
+    padding: 12px 15px;
+    font-size: 18px;
+  }
+
+  .slide-prev { left: 10px; }
+  .slide-next { right: 10px; }
+}
