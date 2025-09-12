@@ -10,50 +10,51 @@
 </head>
 <body>
   <header>
-  <div class="container nav">
-    <a href="../index.html" class="brand" aria-label="Uga Fest Japan Home">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <div>Uga Fest Japan</div>
-        <div class="muted" style="font-size:.85rem">Sports &amp; Music Festival</div>
+    <div class="container nav">
+      <a href="../index.html" class="brand" aria-label="Uga Fest Japan Home">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div>Uga Fest Japan</div>
+          <div class="muted" style="font-size:.85rem">Sports &amp; Music Festival</div>
+        </div>
+      </a>
+      <nav aria-label="Primary">
+        <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+        <ul id="menu">
+          <li><a href="../index.html" data-translate="Home">Home</a></li>
+          <li><a href="about.html" data-translate="About">About</a></li>
+          <li><a href="program.html" data-translate="Program">Program</a></li>
+          <li><a href="gallery.html" data-translate="Gallery">Gallery</a></li>
+          <!--<li><a href="tickets.html" data-translate="Tickets">Tickets</a></li>-->
+          <li><a href="partners.html" class='active' data-translate="Partners">Partners</a></li>
+          <li><a href="faqs.html" data-translate="FAQs">FAQs</a></li>
+          <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-cta">
+        <button id="languageToggle" class="btn secondary" aria-label="Switch to Japanese">
+          <span class="ic">🌐</span> JA
+        </button>
+        <a class="btn" href="tickets.html" aria-label="Buy Tickets" data-translate="Buy Tickets">Buy Tickets</a>
       </div>
-    </a>
-    <nav aria-label="Primary">
-      <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
-      <ul id="menu">
-        <li><a href="../index.html" data-translate="Home">Home</a></li>
-        <li><a href="about.html" data-translate="About">About</a></li>
-        <li><a href="program.html" data-translate="Program">Program</a></li>
-        <li><a href="gallery.html" data-translate="Gallery">Gallery</a></li>
-        <!--<li><a href="tickets.html" data-translate="Tickets">Tickets</a></li>-->
-        <li><a href="partners.html" class='active' data-translate="Partners">Partners</a></li>
-        <li><a href="faqs.html" data-translate="FAQs">FAQs</a></li>
-        <li><a href="contact.html" data-translate="Contact">Contact</a></li>
-      </ul>
-    </nav>
-    <div class="nav-cta">
-      <button id="languageToggle" class="btn secondary" aria-label="Switch to Japanese">
-        <span class="ic">🌐</span> JA
-      </button>
-      <a class="btn" href="tickets.html" aria-label="Buy Tickets" data-translate="Buy Tickets">Buy Tickets</a>
+    </div>
+  </header>
+
+  <div class="mobile-nav">
+    <ul>
+      <li><a href="../index.html" data-translate="Home">Home</a></li>
+      <li><a href="about.html" data-translate="About">About</a></li>
+      <li><a href="program.html" data-translate="Program">Program</a></li>
+      <li><a href="gallery.html" data-translate="Gallery">Gallery</a></li>
+      <li><a href="partners.html" data-translate="Partners">Partners</a></li>
+      <li><a href="faqs.html" data-translate="FAQs">FAQs</a></li>
+      <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+    </ul>
+    <div style="margin-top: 20px;">
+      <a class="btn" href="tickets.html" style="width: 100%; text-align: center; justify-content: center;" data-translate="Buy Tickets">Buy Tickets</a>
     </div>
   </div>
-</header>
-<div class="mobile-nav">
-  <ul>
-    <li><a href="index.html" data-translate="Home">Home</a></li>
-    <li><a href="pages/about.html" data-translate="About">About</a></li>
-    <li><a href="pages/program.html" data-translate="Program">Program</a></li>
-    <li><a href="pages/gallery.html" data-translate="Gallery">Gallery</a></li>
-    <li><a href="pages/partners.html" data-translate="Partners">Partners</a></li>
-    <li><a href="pages/faqs.html" data-translate="FAQs">FAQs</a></li>
-    <li><a href="pages/contact.html" data-translate="Contact">Contact</a></li>
-  </ul>
-  <div style="margin-top: 20px;">
-    <a class="btn" href="pages/tickets.html" style="width: 100%; text-align: center; justify-content: center;" data-translate="Buy Tickets">Buy Tickets</a>
-  </div>
-</div>
-<div class="overlay"></div>
+  <div class="overlay"></div>
   
   <section class="section">
     <div class="container">
@@ -72,43 +73,47 @@
       </div>
     </div>
   </section>
+  
   <footer class="section-sm">
-  <div class="container foot-grid">
-    <div>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <div>Uga Fest Japan</div>
-          <div class="muted" style="font-size:.85rem" data-translate="Celebrating Uganda's Independence">Celebrating Uganda's Independence</div>
+    <div class="container foot-grid">
+      <div>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div>Uga Fest Japan</div>
+            <div class="muted" style="font-size:.85rem" data-translate="Celebrating Uganda's Independence">Celebrating Uganda's Independence</div>
+          </div>
         </div>
+        <p class="muted" style="margin-top:10px">© <span id="year"></span> Uga Fest Japan. All rights reserved.</p>
       </div>
-      <p class="muted" style="margin-top:10px">© <span id="year"></span> Uga Fest Japan. All rights reserved.</p>
+      <div class="foot-col">
+        <div class="h3" data-translate="Explore">Explore</div>
+        <a href="program.html" data-translate="Program">Program</a>
+        <a href="tickets.html" data-translate="Tickets">Tickets</a>
+        <a href="partners.html" data-translate="Partners">Partners</a>
+      </div>
+      <div class="foot-col">
+        <div class="h3" data-translate="Help">Help</div>
+        <a href="faqs.html" data-translate="FAQs">FAQs</a>
+        <a href="contact.html" data-translate="Contact">Contact</a>
+        <a href="privacy.html" data-translate="Privacy">Privacy</a>
+      </div>
     </div>
-    <div class="foot-col">
-      <div class="h3" data-translate="Explore">Explore</div>
-      <a href="program.html" data-translate="Program">Program</a>
-      <a href="tickets.html" data-translate="Tickets">Tickets</a>
-      <a href="partners.html" data-translate="Partners">Partners</a>
-    </div>
-    <div class="foot-col">
-      <div class="h3" data-translate="Help">Help</div>
-      <a href="faqs.html" data-translate="FAQs">FAQs</a>
-      <a href="contact.html" data-translate="Contact">Contact</a>
-      <a href="privacy.html" data-translate="Privacy">Privacy</a>
-    </div>
-  </div>
-</footer>
-<button id="backToTop" aria-label="Back to top" title="Back to top"
-  style="position:fixed;right:16px;bottom:16px;display:none;border:1px solid var(--line);background:#141424;color:var(--text);padding:.7rem .9rem;border-radius:999px;box-shadow:var(--shadow)">↑</button>
-<script src="../assets/main.min.js"></script>
+  </footer>
+  
+  <button id="backToTop" aria-label="Back to top" title="Back to top"
+    style="position:fixed;right:16px;bottom:16px;display:none;border:1px solid var(--line);background:#141424;color:var(--text);padding:.7rem .9rem;border-radius:999px;box-shadow:var(--shadow)">↑</button>
+  
+  <script src="../assets/main.min.js"></script>
+  
   <div class="sticky-cta">
-  <div class="wrap">
-    <div>
-      <div style="font-weight: 700;">Uga Fest Japan 2025</div>
-      <div class="muted" style="font-size: 0.9rem;">Oct 12 • Nagoya</div>
+    <div class="wrap">
+      <div>
+        <div style="font-weight: 700;">Uga Fest Japan 2025</div>
+        <div class="muted" style="font-size: 0.9rem;">Oct 12 • Nagoya</div>
+      </div>
+      <a class="btn" href="tickets.html" data-translate="Buy Tickets">Buy Tickets</a>
     </div>
-    <a class="btn" href="pages/tickets.html" data-translate="Buy Tickets">Buy Tickets</a>
   </div>
-</div>
 </body>
 </html>
