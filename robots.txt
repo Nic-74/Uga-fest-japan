@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://nic-74.github.io/Uga-fest-japan/sitemap.xml
+
+Sitemap: https://nic-74.github.io/Uga-fest-japan/sitemap1.xml
