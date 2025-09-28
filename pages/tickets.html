@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="../assets/styles.min.css">
   <link rel="stylesheet" href="../assets/tickets.css">
   <script src="../assets/translations.js"></script>
+  <!-- EmailJS for sending notifications -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 </head>
 <body>
   <!-- Header -->
@@ -34,7 +36,7 @@
       </nav>
       <div class="nav-cta">
         <button id="languageToggle" class="btn secondary" aria-label="Switch to Japanese">
-          <span class="ic">🌍</span> JA
+          <span class="ic">🌐</span> JA
         </button>
         <a class="btn" href="tickets.html" aria-label="Buy Tickets" data-translate="Buy Tickets">Buy Tickets</a>
       </div>
@@ -66,7 +68,7 @@
         </div>
 
         <div class="tile" style="margin-top:12px">
-          🎫 <strong data-translate="Tip:">Tip:</strong> <span data-translate="Early purchase recommended — Uga Fest sells out fast!">Early purchase recommended — Uga Fest sells out fast!</span>
+          🎫 <strong data-translate="Tip:">Tip:</strong> <span data-translate="Early purchase recommended – Uga Fest sells out fast!">Early purchase recommended – Uga Fest sells out fast!</span>
         </div>
       </div>
 
@@ -175,12 +177,17 @@
 
         <!-- Contact Information -->
         <div class="form-group">
-          <label class="form-label">Email Address</label>
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-input" placeholder="Your full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
           <input type="email" class="form-input" placeholder="your@email.com" required>
         </div>
         
         <div class="form-group">
-          <label class="form-label">Phone Number (Optional)</label>
+          <label class="form-label">Phone Number</label>
           <input type="tel" class="form-input" placeholder="+81 90-1234-5678">
         </div>
 
@@ -239,5 +246,15 @@
 
   <script src="../assets/main.min.js"></script>
   <script src="../assets/tickets.js"></script>
+
+  <script>
+    // Initialize EmailJS with your configuration
+    document.addEventListener('DOMContentLoaded', function() {
+      // Replace these with your actual EmailJS configuration
+      if (typeof emailjs !== 'undefined') {
+        emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
+      }
+    });
+  </script>
 </body>
 </html>
