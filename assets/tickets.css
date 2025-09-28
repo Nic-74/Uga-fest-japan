@@ -1,4 +1,3 @@
-/* Payment Modal Styles - Extracted from tickets.html */
 .payment-modal {
   position: fixed;
   top: 0;
@@ -45,6 +44,11 @@
   padding: 5px;
   border-radius: 6px;
   transition: all 0.2s ease;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .payment-close:hover {
@@ -67,6 +71,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 44px;
 }
 
 .payment-method:hover {
@@ -88,6 +93,7 @@
   justify-content: center;
   font-weight: bold;
   color: white;
+  flex-shrink: 0;
 }
 
 .paypay-icon {
@@ -108,6 +114,7 @@
 
 .payment-info {
   flex: 1;
+  min-width: 0;
 }
 
 .payment-name {
@@ -131,6 +138,10 @@
   margin: 8px 0;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .delivery-method:hover {
@@ -174,6 +185,7 @@
   background: var(--bg);
   color: var(--text);
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
@@ -207,6 +219,7 @@
   display: flex;
   justify-content: space-between;
   margin: 8px 0;
+  align-items: center;
 }
 
 .summary-total {
@@ -228,6 +241,8 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: 44px;
+  font-size: 16px;
 }
 
 .proceed-btn:hover {
@@ -279,13 +294,316 @@
   font-size: 24px;
 }
 
+/* MOBILE RESPONSIVENESS - This was missing! */
 @media (max-width: 680px) {
+  /* Header improvements for tickets page */
+  .nav {
+    padding: 8px 0;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .brand {
+    flex-grow: 1;
+    font-size: 0.9rem;
+  }
+  
+  .nav-cta {
+    gap: 8px;
+    order: 2;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  
+  .nav-cta .btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Mobile menu improvements */
+  .menu-btn {
+    display: block;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    min-height: 44px;
+    min-width: 44px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+  }
+  
+  nav ul {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: var(--panel);
+    flex-direction: column;
+    padding: 20px;
+    border-top: 1px solid var(--line);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 100;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+  
+  nav ul.open {
+    display: flex;
+  }
+  
+  nav ul li {
+    width: 100%;
+  }
+  
+  nav ul a {
+    display: block;
+    padding: 15px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* Tickets page specific mobile fixes */
+  .section {
+    padding: 40px 0;
+  }
+  
+  .container {
+    padding-inline: 16px;
+  }
+  
+  /* Grid improvements for mobile */
+  .pricing,
+  .grid.pricing {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  /* Ticket cards mobile styling */
+  .tile {
+    padding: 16px;
+  }
+  
+  .tile .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  /* Price display mobile */
+  .price {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .price .amt {
+    font-size: 1.8rem;
+  }
+  
+  .badge {
+    font-size: 0.7rem;
+    margin-left: 0;
+  }
+  
+  /* Button improvements */
+  .btn,
+  .buy-ticket-btn {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  
+  .actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .actions .btn {
+    width: 100%;
+  }
+  
+  /* Typography mobile fixes */
+  .h1 {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    line-height: 1.1;
+  }
+  
+  .h2 {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  }
+  
+  .h3 {
+    font-size: 1rem;
+  }
+  
+  /* Payment Modal Mobile Improvements */
   .payment-container {
     width: 95vw;
     margin: 10px;
+    max-height: 95vh;
   }
   
+  .payment-header {
+    padding: 16px;
+  }
+  
+  .payment-content {
+    padding: 16px;
+  }
+  
+  .payment-header .h3 {
+    font-size: 1.1rem;
+  }
+  
+  /* Card form mobile */
   .card-row {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  /* Payment method mobile */
+  .payment-method {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .payment-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .paypay-icon img {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .payment-name {
+    font-size: 0.95rem;
+  }
+  
+  .payment-desc {
+    font-size: 0.8rem;
+  }
+  
+  /* Delivery options mobile */
+  .delivery-method {
+    padding: 12px;
+  }
+  
+  .delivery-title {
+    font-size: 0.9rem;
+  }
+  
+  .delivery-desc {
+    font-size: 0.8rem;
+  }
+  
+  /* Form improvements mobile */
+  .form-input {
+    padding: 14px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .form-label {
+    font-size: 0.9rem;
+  }
+  
+  /* Order summary mobile */
+  .order-summary {
+    padding: 12px;
+  }
+  
+  .summary-row {
+    font-size: 0.9rem;
+  }
+  
+  .summary-total {
+    font-size: 1rem;
+  }
+  
+  /* Success modal mobile */
+  .success-content {
+    width: 95vw;
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  .success-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  /* Footer mobile fixes */
+  .foot-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+  
+  .foot-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* Safe area for mobile devices with notches */
+  #backToTop {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right));
+  }
+  
+  /* Text legibility improvements */
+  body {
+    font-size: 16px; /* Prevents zoom on iOS */
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Prevent horizontal scroll */
+  .container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* Tablet specific improvements */
+@media (min-width: 681px) and (max-width: 1024px) {
+  .pricing {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .tile .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .payment-container {
+    width: 80vw;
+    max-width: 600px;
+  }
+  
+  .nav-cta .btn {
+    padding: 0.5rem 0.7rem;
+  }
+}
+
+/* Improved landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .section {
+    padding: 20px 0;
+  }
+  
+  .payment-container {
+    max-height: 95vh;
+  }
+  
+  nav ul {
+    max-height: 70vh;
   }
 }
