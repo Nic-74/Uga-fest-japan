@@ -213,6 +213,7 @@ async function processPayPayPayment() {
     ticketType: currentTicketType,
     ticketPrice: currentTicketPrice,
     deliveryMethod: selectedDeliveryMethod,
+    paymentMethod: 'paypay', // Explicitly set payment method
     orderTime: new Date().toISOString()
   };
   
@@ -362,6 +363,9 @@ function checkPaymentStatus() {
 }
 
 async function completePayPayOrder() {
+  // Ensure selectedPaymentMethod is set to paypay
+  selectedPaymentMethod = 'paypay';
+  
   // Remove processing modal
   const modal = document.getElementById('paymentProcessing');
   if (modal) {
@@ -440,7 +444,7 @@ function checkPendingOrders() {
         if (confirm('You have a pending PayPay payment. Did you complete it successfully?')) {
           currentTicketType = orderData.ticketType;
           currentTicketPrice = orderData.ticketPrice;
-          selectedPaymentMethod = 'paypay';
+          selectedPaymentMethod = orderData.paymentMethod || 'paypay'; // Restore payment method
           completePayPayOrder();
         } else {
           sessionStorage.removeItem('pendingOrder');
@@ -486,11 +490,11 @@ async function sendEmailNotifications(orderId) {
 
 async function sendOrganizerEmail(customerData, orderId) {
   const templateParams = {
-    // Basic email fields
+    // Basic email fields that match your template exactly
     to_email: EMAILJS_CONFIG.organizerEmail,
     subject: `🎫 New Ticket Purchase - Order #${orderId}`,
     
-    // Order details that match your template variables
+    // Order details that match your template variables exactly
     order_id: orderId,
     customer_name: customerData.name,
     customer_email: customerData.email,
@@ -501,9 +505,15 @@ async function sendOrganizerEmail(customerData, orderId) {
     delivery_method: customerData.deliveryMethod,
     order_date: customerData.orderDate,
     
-    // Full formatted message body
+    // Additional variables for compatibility
+    name: customerData.name, // {{name}} in your template
+    email: customerData.email, // {{email}} in your template
+    
+    // Full formatted message body (if you want to use it in template)
     message_body: formatNotificationEmail(customerData, orderId)
   };
+  
+  console.log('Sending organizer email with params:', templateParams);
   
   return emailjs.send(
     EMAILJS_CONFIG.serviceId, 
@@ -514,16 +524,24 @@ async function sendOrganizerEmail(customerData, orderId) {
 
 async function sendCustomerTicket(customerData, orderId) {
   const templateParams = {
-    // Customer email details
+    // Send TO the customer email
     to_email: customerData.email,
-    customer_name: customerData.name,
+    to_name: customerData.name,
+    
+    // FROM your organizer email (this should match your EmailJS service setup)
+    from_email: EMAILJS_CONFIG.organizerEmail,
+    from_name: 'Uga Fest Japan Team',
     
     // Order information
     order_id: orderId,
+    customer_name: customerData.name,
+    customer_email: customerData.email,
+    customer_phone: customerData.phone || 'Not provided',
     ticket_type: customerData.ticketType,
     price: `¥${customerData.price.toLocaleString()}`,
     payment_method: customerData.paymentMethod,
     order_date: customerData.orderDate,
+    delivery_method: customerData.deliveryMethod,
     
     // Event details
     event_date: 'October 9, 2025',
@@ -533,9 +551,18 @@ async function sendCustomerTicket(customerData, orderId) {
     // QR code for entry
     qr_code_text: `UF2025-${orderId}`,
     
+    // Subject line
+    subject: ` Your Uga Fest Japan Ticket - Order #${orderId}`,
+    
+    // Additional variables for compatibility
+    name: customerData.name,
+    email: customerData.email,
+    
     // Full formatted message
     message_body: formatCustomerTicketEmail(customerData, orderId)
   };
+  
+  console.log('Sending customer ticket with params:', templateParams);
   
   return emailjs.send(
     EMAILJS_CONFIG.serviceId, 
@@ -555,6 +582,7 @@ function getCustomerData() {
     phone: phoneInput?.value || 'Not provided',
     ticketType: currentTicketType === 'vip' ? 'VIP Ticket' : 'Ordinary Ticket',
     price: currentTicketPrice,
+    // Fixed: Correctly identify the payment method
     paymentMethod: selectedPaymentMethod === 'paypay' ? 'PayPay' : 'Credit Card',
     deliveryMethod: selectedDeliveryMethod === 'email' ? 'Email Delivery' : 'Venue Pickup',
     orderDate: new Date().toLocaleString('en-JP', { 
@@ -573,18 +601,18 @@ function formatNotificationEmail(customerData, orderId) {
 
 Order Details:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 Order ID: #UF2025-${orderId}
-📅 Date: ${customerData.orderDate}
-🎫 Ticket Type: ${customerData.ticketType}
-💰 Amount: ¥${customerData.price.toLocaleString()}
-💳 Payment Method: ${customerData.paymentMethod}
-📦 Delivery: ${customerData.deliveryMethod}
+ Order ID: #UF2025-${orderId}
+ Date: ${customerData.orderDate}
+ Ticket Type: ${customerData.ticketType}
+ Amount: ¥${customerData.price.toLocaleString()}
+ Payment Method: ${customerData.paymentMethod}
+ Delivery: ${customerData.deliveryMethod}
 
 Customer Information:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 👤 Name: ${customerData.name}
-📧 Email: ${customerData.email}
-📱 Phone: ${customerData.phone}
+ Email: ${customerData.email}
+ Phone: ${customerData.phone}
 
 Next Steps:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -604,31 +632,32 @@ Dear ${customerData.name},
 
 Thank you for purchasing your ticket to Uga Fest Japan!
 
-🎟️ TICKET DETAILS
+ TICKET DETAILS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 Order ID: #UF2025-${orderId}
-🎫 Ticket Type: ${customerData.ticketType}
-💰 Amount Paid: ¥${customerData.price.toLocaleString()}
-📅 Purchase Date: ${customerData.orderDate}
+ Order ID: #UF2025-${orderId}
+ Ticket Type: ${customerData.ticketType}
+ Amount Paid: ¥${customerData.price.toLocaleString()}
+ Payment Method: ${customerData.paymentMethod}
+ Purchase Date: ${customerData.orderDate}
 
-📍 EVENT INFORMATION
+ EVENT INFORMATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎉 Event: Uga Fest Japan
-📅 Date: October 9, 2025
-🕕 Time: 6:00 PM - 11:00 PM
-📍 Location: Tokyo, Japan
+ Date: October 9, 2025
+ Time: 6:00 PM - 11:00 PM
+ Location: Tokyo, Japan
 
 ${customerData.ticketType === 'VIP Ticket' ? 
 `✨ VIP PERKS INCLUDED:
 • Priority seating
 • Exclusive bar access
 • Meet & greet opportunities` : 
-`🎵 GENERAL ACCESS INCLUDES:
+` GENERAL ACCESS INCLUDES:
 • Concert night access
 • Food & drink vendors
 • Festival activities`}
 
-📱 ENTRY INSTRUCTIONS
+ ENTRY INSTRUCTIONS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Present this email at the venue entrance
 • QR Code: UF2025-${orderId}
