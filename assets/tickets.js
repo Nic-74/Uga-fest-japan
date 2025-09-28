@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize EmailJS
   if (typeof emailjs !== 'undefined') {
-    emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
+    emailjs.init('4d0JD6v9ntHksYUD6'); // Replace with your EmailJS public key
   }
 });
 
@@ -458,7 +458,7 @@ async function sendOrganizerNotification(orderId) {
     console.error('Email sending failed:', error);
     // Fallback to mailto for organizer notification
     const emailData = {
-      to: 'aggresius.kayimbye@gmail.com',
+      to: 'nicholaslubega74@gmail.com',
       subject: `🎫 New Ticket Purchase - Order #${orderId}`,
       body: formatNotificationEmail(customerData, orderId)
     };
@@ -468,14 +468,14 @@ async function sendOrganizerNotification(orderId) {
 
 async function sendOrganizerEmail(customerData, orderId) {
   const emailData = {
-    to: 'aggresius.kayimbye@gmail.com',
+    to: 'nicholaslubega74@gmail.com',
     subject: `🎫 New Ticket Purchase - Order #${orderId}`,
     body: formatNotificationEmail(customerData, orderId)
   };
   
   if (typeof emailjs !== 'undefined') {
     const templateParams = {
-      to_email: 'aggresius.kayimbye@gmail.com',
+      to_email: 'nicholaslubega74@gmail.com',
       subject: emailData.subject,
       order_id: orderId,
       customer_name: customerData.name,
@@ -489,7 +489,7 @@ async function sendOrganizerEmail(customerData, orderId) {
       message_body: emailData.body
     };
     
-    return emailjs.send('YOUR_SERVICE_ID', 'YOUR_ORGANIZER_TEMPLATE_ID', templateParams);
+    return emailjs.send('service_yfa65gi', 'template_g3bh96l', templateParams);
   } else {
     throw new Error('EmailJS not loaded');
   }
@@ -512,7 +512,7 @@ async function sendCustomerTicket(customerData, orderId) {
       message_body: formatCustomerTicketEmail(customerData, orderId)
     };
     
-    return emailjs.send('YOUR_SERVICE_ID', 'YOUR_CUSTOMER_TEMPLATE_ID', templateParams);
+    return emailjs.send('service_yfa65gi', 'template_dix8pfk', templateParams);
   } else {
     throw new Error('EmailJS not loaded');
   }
