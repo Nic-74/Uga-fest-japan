@@ -13,7 +13,7 @@ const PAYPAY_LINKS = {
 // EmailJS configuration
 const EMAILJS_CONFIG = {
   publicKey: '4d0JD6v9ntHksYUD6',
-  serviceId: 'service_yfa65gi',
+  serviceId: 'service_h4a3fnt',
   organizerTemplateId: 'template_g3bh96l',
   customerTemplateId: 'template_dix8pfk',
   organizerEmail: 'nicholaslubega74@gmail.com'
