@@ -6,7 +6,7 @@ let currentTicketPrice = 0;
 
 // PayPay payment links
 const PAYPAY_LINKS = {
-  ordinary: 'https://qr.paypay.ne.jp/p2p01_8iPn5mpkgQF3ossX', // ¥10,000
+  ordinary: 'https://qr.paypay.ne.jp/p2p01_ggj9EfeCQYijxq5V', // ¥10,000
   vip: 'https://qr.paypay.ne.jp/p2p01_s6bpsnFgW51sfOJJ'       // ¥20,000
 };
 
