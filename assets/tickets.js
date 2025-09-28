@@ -10,6 +10,15 @@ const PAYPAY_LINKS = {
   vip: 'https://qr.paypay.ne.jp/p2p01_s6bpsnFgW51sfOJJ'       // ¥20,000
 };
 
+// EmailJS configuration
+const EMAILJS_CONFIG = {
+  publicKey: '4d0JD6v9ntHksYUD6',
+  serviceId: 'service_yfa65gi',
+  organizerTemplateId: 'template_g3bh96l',
+  customerTemplateId: 'template_dix8pfk',
+  organizerEmail: 'nicholaslubega74@gmail.com'
+};
+
 // Initialize event listeners
 document.addEventListener('DOMContentLoaded', function() {
   // Buy ticket buttons
@@ -81,8 +90,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize EmailJS
   if (typeof emailjs !== 'undefined') {
-    emailjs.init('4d0JD6v9ntHksYUD6'); // Replace with your EmailJS public key
+    emailjs.init(EMAILJS_CONFIG.publicKey);
+    console.log('EmailJS initialized successfully');
+  } else {
+    console.error('EmailJS library not loaded. Make sure to include the EmailJS script.');
   }
+
+  // Check for pending orders
+  checkPendingOrders();
 });
 
 function openPaymentModal() {
@@ -157,11 +172,10 @@ async function processPayment() {
 async function processCardPayment() {
   // Simulate card processing
   return new Promise((resolve) => {
-    setTimeout(() => {
-      // In a real implementation, this would integrate with a payment processor like Stripe
+    setTimeout(async () => {
       console.log('Card payment processed successfully');
       closePaymentModal();
-      showSuccessModal();
+      await showSuccessModal();
       resolve();
     }, 2000);
   });
@@ -347,7 +361,7 @@ function checkPaymentStatus() {
   }
 }
 
-function completePayPayOrder() {
+async function completePayPayOrder() {
   // Remove processing modal
   const modal = document.getElementById('paymentProcessing');
   if (modal) {
@@ -355,7 +369,7 @@ function completePayPayOrder() {
   }
   
   // Complete the order
-  showSuccessModal();
+  await showSuccessModal();
   
   // Clear pending order
   sessionStorage.removeItem('pendingOrder');
@@ -376,7 +390,7 @@ function cancelPaymentProcessing() {
   }
 }
 
-function showSuccessModal() {
+async function showSuccessModal() {
   // Generate random order ID
   const orderId = Math.random().toString(36).substr(2, 8).toUpperCase();
   document.getElementById('orderId').textContent = orderId;
@@ -384,12 +398,18 @@ function showSuccessModal() {
   document.getElementById('successModal').style.display = 'flex';
   
   // Send notification emails to organizer and customer
-  sendOrganizerNotification(orderId);
+  try {
+    await sendEmailNotifications(orderId);
+    console.log('Email notifications sent successfully');
+  } catch (error) {
+    console.error('Failed to send email notifications:', error);
+    // Still show success but indicate email issue
+    alert('Order completed successfully! However, there was an issue sending confirmation emails. Please contact support.');
+  }
   
   // In a real implementation, this would trigger backend processes:
-  // - Send confirmation email
-  // - Generate ticket
   // - Update inventory
+  // - Log transaction
   console.log('Order completed successfully:', {
     orderId,
     ticketType: currentTicketType,
@@ -404,17 +424,8 @@ function closeSuccessModal() {
   location.reload();
 }
 
-// Close modals when clicking outside
-document.addEventListener('click', function(e) {
-  if (e.target.id === 'paymentModal') {
-    closePaymentModal();
-  } else if (e.target.id === 'successModal') {
-    closeSuccessModal();
-  }
-});
-
-// Handle page refresh with pending order
-document.addEventListener('DOMContentLoaded', function() {
+// Check for pending orders on page load
+function checkPendingOrders() {
   const pendingOrder = sessionStorage.getItem('pendingOrder');
   if (pendingOrder) {
     const orderData = JSON.parse(pendingOrder);
@@ -440,82 +451,97 @@ document.addEventListener('DOMContentLoaded', function() {
       sessionStorage.removeItem('pendingOrder');
     }
   }
-});
+}
 
 // Email notification functions
-async function sendOrganizerNotification(orderId) {
+async function sendEmailNotifications(orderId) {
   const customerData = getCustomerData();
+  
+  if (typeof emailjs === 'undefined') {
+    throw new Error('EmailJS library not loaded');
+  }
   
   try {
     // Send notification to organizer
     await sendOrganizerEmail(customerData, orderId);
+    console.log('Organizer notification sent');
     
     // Send ticket confirmation to customer
     await sendCustomerTicket(customerData, orderId);
+    console.log('Customer ticket sent');
     
-    console.log('Both emails sent successfully');
+    return true;
   } catch (error) {
     console.error('Email sending failed:', error);
     // Fallback to mailto for organizer notification
     const emailData = {
-      to: 'nicholaslubega74@gmail.com',
+      to: EMAILJS_CONFIG.organizerEmail,
       subject: `🎫 New Ticket Purchase - Order #${orderId}`,
       body: formatNotificationEmail(customerData, orderId)
     };
     sendEmailViaMailto(emailData);
+    throw error;
   }
 }
 
 async function sendOrganizerEmail(customerData, orderId) {
-  const emailData = {
-    to: 'nicholaslubega74@gmail.com',
+  const templateParams = {
+    // Basic email fields
+    to_email: EMAILJS_CONFIG.organizerEmail,
     subject: `🎫 New Ticket Purchase - Order #${orderId}`,
-    body: formatNotificationEmail(customerData, orderId)
+    
+    // Order details that match your template variables
+    order_id: orderId,
+    customer_name: customerData.name,
+    customer_email: customerData.email,
+    customer_phone: customerData.phone || 'Not provided',
+    ticket_type: customerData.ticketType,
+    price: `¥${customerData.price.toLocaleString()}`,
+    payment_method: customerData.paymentMethod,
+    delivery_method: customerData.deliveryMethod,
+    order_date: customerData.orderDate,
+    
+    // Full formatted message body
+    message_body: formatNotificationEmail(customerData, orderId)
   };
   
-  if (typeof emailjs !== 'undefined') {
-    const templateParams = {
-      to_email: 'nicholaslubega74@gmail.com',
-      subject: emailData.subject,
-      order_id: orderId,
-      customer_name: customerData.name,
-      customer_email: customerData.email,
-      customer_phone: customerData.phone,
-      ticket_type: customerData.ticketType,
-      price: `¥${customerData.price.toLocaleString()}`,
-      payment_method: customerData.paymentMethod,
-      delivery_method: customerData.deliveryMethod,
-      order_date: customerData.orderDate,
-      message_body: emailData.body
-    };
-    
-    return emailjs.send('service_yfa65gi', 'template_g3bh96l', templateParams);
-  } else {
-    throw new Error('EmailJS not loaded');
-  }
+  return emailjs.send(
+    EMAILJS_CONFIG.serviceId, 
+    EMAILJS_CONFIG.organizerTemplateId, 
+    templateParams
+  );
 }
 
 async function sendCustomerTicket(customerData, orderId) {
-  if (typeof emailjs !== 'undefined') {
-    const templateParams = {
-      to_email: customerData.email,
-      customer_name: customerData.name,
-      order_id: orderId,
-      ticket_type: customerData.ticketType,
-      price: `¥${customerData.price.toLocaleString()}`,
-      payment_method: customerData.paymentMethod,
-      order_date: customerData.orderDate,
-      event_date: 'October 9, 2025', // Update with actual event date
-      event_time: '6:00 PM - 11:00 PM', // Update with actual event time
-      event_location: 'Tokyo, Japan', // Update with actual venue
-      qr_code_text: `UF2025-${orderId}`, // This will be the QR code content
-      message_body: formatCustomerTicketEmail(customerData, orderId)
-    };
+  const templateParams = {
+    // Customer email details
+    to_email: customerData.email,
+    customer_name: customerData.name,
     
-    return emailjs.send('service_yfa65gi', 'template_dix8pfk', templateParams);
-  } else {
-    throw new Error('EmailJS not loaded');
-  }
+    // Order information
+    order_id: orderId,
+    ticket_type: customerData.ticketType,
+    price: `¥${customerData.price.toLocaleString()}`,
+    payment_method: customerData.paymentMethod,
+    order_date: customerData.orderDate,
+    
+    // Event details
+    event_date: 'October 9, 2025',
+    event_time: '6:00 PM - 11:00 PM',
+    event_location: 'Tokyo, Japan',
+    
+    // QR code for entry
+    qr_code_text: `UF2025-${orderId}`,
+    
+    // Full formatted message
+    message_body: formatCustomerTicketEmail(customerData, orderId)
+  };
+  
+  return emailjs.send(
+    EMAILJS_CONFIG.serviceId, 
+    EMAILJS_CONFIG.customerTemplateId, 
+    templateParams
+  );
 }
 
 function getCustomerData() {
@@ -543,8 +569,7 @@ function getCustomerData() {
 }
 
 function formatNotificationEmail(customerData, orderId) {
-  return `
-🎉 NEW TICKET PURCHASE NOTIFICATION
+  return `🎉 NEW TICKET PURCHASE NOTIFICATION
 
 Order Details:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -569,13 +594,11 @@ ${customerData.deliveryMethod === 'Email Delivery'
 }
 
 ---
-Uga Fest Japan Ticket System
-  `.trim();
+Uga Fest Japan Ticket System`;
 }
 
 function formatCustomerTicketEmail(customerData, orderId) {
-  return `
-🎫 YOUR UGA FEST JAPAN TICKET
+  return `🎫 YOUR UGA FEST JAPAN TICKET
 
 Dear ${customerData.name},
 
@@ -599,13 +622,11 @@ ${customerData.ticketType === 'VIP Ticket' ?
 `✨ VIP PERKS INCLUDED:
 • Priority seating
 • Exclusive bar access
-• Meet & greet opportunities
-` : 
+• Meet & greet opportunities` : 
 `🎵 GENERAL ACCESS INCLUDES:
 • Concert night access
 • Food & drink vendors
-• Festival activities
-`}
+• Festival activities`}
 
 📱 ENTRY INSTRUCTIONS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -616,12 +637,11 @@ ${customerData.ticketType === 'VIP Ticket' ?
 
 🎊 We can't wait to celebrate with you!
 
-Questions? Contact us at aggresius.kayimbye@gmail.com
+Questions? Contact us at ${EMAILJS_CONFIG.organizerEmail}
 
 ---
 Uga Fest Japan Team
-Celebrating Uganda's Independence in Japan
-  `.trim();
+Celebrating Uganda's Independence in Japan`;
 }
 
 // Fallback method using mailto
@@ -639,28 +659,11 @@ function sendEmailViaMailto(emailData) {
   console.log('Email notification sent via mailto');
 }
 
-// Alternative: Send via form submission to a server endpoint
-async function sendEmailViaServer(emailData, customerData, orderId) {
-  try {
-    const response = await fetch('/send-notification', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...emailData,
-        customerData,
-        orderId
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error('Server notification failed');
-    }
-    
-    console.log('Email notification sent via server');
-  } catch (error) {
-    console.error('Server email notification failed:', error);
-    throw error;
+// Close modals when clicking outside
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'paymentModal') {
+    closePaymentModal();
+  } else if (e.target.id === 'successModal') {
+    closeSuccessModal();
   }
-}
+});
