@@ -12,11 +12,11 @@ const PAYPAY_LINKS = {
 
 // EmailJS configuration
 const EMAILJS_CONFIG = {
-  publicKey: '4d0JD6v9ntHksYUD6',
-  serviceId: 'service_h4a3fnt',
-  organizerTemplateId: 'template_g3bh96l',
-  customerTemplateId: 'template_dix8pfk',
-  organizerEmail: 'nicholaslubega74@gmail.com'
+  publicKey: '9lwDqPPX6kfB_j_AD',
+  serviceId: 'service_4f095ci',
+  organizerTemplateId: 'template_efvj14a',
+  customerTemplateId: 'template_86p8hbj',
+  organizerEmail: 'aggresius.kayimbye@gmail.com'
 };
 
 // Initialize event listeners
