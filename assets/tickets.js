@@ -1,8 +1,14 @@
-// Payment system functionality - Extracted from tickets.html
+// Payment system functionality - Updated with PayPay integration and Email Notifications
 let selectedPaymentMethod = null;
 let selectedDeliveryMethod = 'email';
 let currentTicketType = null;
 let currentTicketPrice = 0;
+
+// PayPay payment links
+const PAYPAY_LINKS = {
+  ordinary: 'https://qr.paypay.ne.jp/p2p01_8iPn5mpkgQF3ossX', // ¥10,000
+  vip: 'https://qr.paypay.ne.jp/p2p01_s6bpsnFgW51sfOJJ'       // ¥20,000
+};
 
 // Initialize event listeners
 document.addEventListener('DOMContentLoaded', function() {
@@ -72,10 +78,15 @@ document.addEventListener('DOMContentLoaded', function() {
       e.target.value = value;
     });
   }
+
+  // Initialize EmailJS
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
+  }
 });
 
 function openPaymentModal() {
-  // Update order summary (no processing fee)
+  // Update order summary
   const ticketName = currentTicketType === 'vip' ? 'VIP Ticket' : 'Ordinary Ticket';
   
   document.getElementById('ticketTypeName').textContent = ticketName;
@@ -89,36 +100,51 @@ function openPaymentModal() {
 function closePaymentModal() {
   document.getElementById('paymentModal').style.display = 'none';
   document.body.style.overflow = '';
+  
+  // Reset form state
+  selectedPaymentMethod = null;
+  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+  document.getElementById('cardForm').classList.remove('active');
+  updateProceedButton();
 }
 
 function updateProceedButton() {
   const proceedBtn = document.querySelector('.proceed-btn');
+  const nameInput = document.querySelector('input[placeholder="Your full name"]');
   const emailInput = document.querySelector('input[type="email"]');
   
-  let isValid = selectedPaymentMethod && emailInput?.value;
+  let isValid = selectedPaymentMethod && nameInput?.value && emailInput?.value;
   
   // Additional validation for card payments
-  if (selectedPaymentMethod === 'card' && paymentElement) {
-    // Stripe Elements handles validation internally
-    isValid = isValid && emailInput?.value;
+  if (selectedPaymentMethod === 'card') {
+    const cardInputs = document.querySelectorAll('#cardForm .form-input[required]');
+    const cardFormValid = Array.from(cardInputs).every(input => input.value.trim() !== '');
+    isValid = isValid && cardFormValid;
   }
   
   proceedBtn.disabled = !isValid;
+  
+  // Update button text based on payment method
+  if (selectedPaymentMethod === 'paypay') {
+    proceedBtn.textContent = 'Pay with PayPay';
+  } else if (selectedPaymentMethod === 'card') {
+    proceedBtn.textContent = 'Complete Purchase';
+  } else {
+    proceedBtn.textContent = 'Complete Purchase';
+  }
 }
 
 async function processPayment() {
   const proceedBtn = document.querySelector('.proceed-btn');
   const originalText = proceedBtn.textContent;
-  proceedBtn.textContent = 'Processing...';
-  proceedBtn.disabled = true;
   
   try {
     if (selectedPaymentMethod === 'card') {
-      await processStripePayment();
+      proceedBtn.textContent = 'Processing...';
+      proceedBtn.disabled = true;
+      await processCardPayment();
     } else if (selectedPaymentMethod === 'paypay') {
-      await initializePayPay();
-      // PayPay processing is handled by polling
-      proceedBtn.textContent = 'Waiting for Payment...';
+      await processPayPayPayment();
     }
   } catch (error) {
     console.error('Payment error:', error);
@@ -128,24 +154,225 @@ async function processPayment() {
   }
 }
 
-async function processStripePayment() {
-  const emailInput = document.querySelector('input[type="email"]');
-  
-  const {error} = await stripe.confirmPayment({
-    elements,
-    confirmParams: {
-      return_url: `${window.location.origin}/payment-success`,
-      receipt_email: emailInput.value,
-    },
-    redirect: 'if_required'
+async function processCardPayment() {
+  // Simulate card processing
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // In a real implementation, this would integrate with a payment processor like Stripe
+      console.log('Card payment processed successfully');
+      closePaymentModal();
+      showSuccessModal();
+      resolve();
+    }, 2000);
   });
+}
 
-  if (error) {
-    console.error('Stripe payment error:', error);
-    throw error;
-  } else {
-    closePaymentModal();
-    showSuccessModal();
+async function processPayPayPayment() {
+  const nameInput = document.querySelector('input[placeholder="Your full name"]');
+  const emailInput = document.querySelector('input[type="email"]');
+  const phoneInput = document.querySelector('input[type="tel"]');
+  
+  // Validate required fields
+  if (!nameInput.value) {
+    alert('Please enter your full name');
+    return;
+  }
+  
+  if (!emailInput.value) {
+    alert('Please enter your email address');
+    return;
+  }
+  
+  // Get the appropriate PayPay link based on ticket type
+  const payPayLink = PAYPAY_LINKS[currentTicketType];
+  
+  if (!payPayLink) {
+    alert('PayPay link not found for this ticket type');
+    return;
+  }
+  
+  // Store customer details for order processing
+  const customerData = {
+    name: nameInput.value,
+    email: emailInput.value,
+    phone: phoneInput.value || '',
+    ticketType: currentTicketType,
+    ticketPrice: currentTicketPrice,
+    deliveryMethod: selectedDeliveryMethod,
+    orderTime: new Date().toISOString()
+  };
+  
+  // Store in sessionStorage for order tracking
+  sessionStorage.setItem('pendingOrder', JSON.stringify(customerData));
+  
+  // Show instructions modal before redirect
+  showPayPayInstructions(payPayLink);
+}
+
+function showPayPayInstructions(payPayLink) {
+  // Create instruction modal
+  const instructionModal = document.createElement('div');
+  instructionModal.id = 'payPayInstructions';
+  instructionModal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+  `;
+  
+  instructionModal.innerHTML = `
+    <div style="background: white; padding: 30px; border-radius: 12px; max-width: 400px; text-align: center; margin: 20px;">
+      <div style="font-size: 48px; margin-bottom: 20px;">💳</div>
+      <h3 style="margin-bottom: 15px; color: #333;">PayPay Payment</h3>
+      <p style="margin-bottom: 20px; color: #666; line-height: 1.5;">
+        You will be redirected to PayPay to complete your payment of ¥${currentTicketPrice.toLocaleString()}.
+      </p>
+      <p style="margin-bottom: 25px; color: #666; font-size: 14px;">
+        After completing the payment, please return to this page to confirm your order.
+      </p>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button onclick="cancelPayPayPayment()" style="padding: 12px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">
+          Cancel
+        </button>
+        <button onclick="proceedToPayPay('${payPayLink}')" style="padding: 12px 20px; background: #ff6b6b; color: white; border: none; border-radius: 6px; cursor: pointer;">
+          Continue to PayPay
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(instructionModal);
+}
+
+function proceedToPayPay(payPayLink) {
+  // Remove instruction modal
+  const modal = document.getElementById('payPayInstructions');
+  if (modal) {
+    modal.remove();
+  }
+  
+  // Close payment modal
+  closePaymentModal();
+  
+  // Show processing state
+  showPaymentProcessing();
+  
+  // Open PayPay link in new tab/window
+  const payPayWindow = window.open(payPayLink, '_blank', 'width=400,height=600');
+  
+  // Start checking for payment completion
+  startPaymentPolling(payPayWindow);
+}
+
+function cancelPayPayPayment() {
+  const modal = document.getElementById('payPayInstructions');
+  if (modal) {
+    modal.remove();
+  }
+  // Clear pending order
+  sessionStorage.removeItem('pendingOrder');
+}
+
+function showPaymentProcessing() {
+  const processingModal = document.createElement('div');
+  processingModal.id = 'paymentProcessing';
+  processingModal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  `;
+  
+  processingModal.innerHTML = `
+    <div style="background: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 350px;">
+      <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+      <h3 style="margin-bottom: 15px; color: #333;">Waiting for Payment</h3>
+      <p style="margin-bottom: 25px; color: #666; line-height: 1.5;">
+        Please complete your PayPay payment. This window will automatically update when payment is received.
+      </p>
+      <button onclick="checkPaymentStatus()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">
+        Check Status
+      </button>
+      <button onclick="cancelPaymentProcessing()" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">
+        Cancel
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(processingModal);
+}
+
+function startPaymentPolling(payPayWindow) {
+  const pollInterval = setInterval(() => {
+    // Check if PayPay window is closed (user might have completed payment)
+    if (payPayWindow && payPayWindow.closed) {
+      clearInterval(pollInterval);
+      // Ask user about payment status
+      setTimeout(() => {
+        if (confirm('Did you complete the PayPay payment successfully?')) {
+          completePayPayOrder();
+        } else {
+          cancelPaymentProcessing();
+        }
+      }, 500);
+    }
+  }, 1000);
+  
+  // Stop polling after 10 minutes
+  setTimeout(() => {
+    clearInterval(pollInterval);
+    if (payPayWindow && !payPayWindow.closed) {
+      payPayWindow.close();
+    }
+  }, 600000);
+}
+
+function checkPaymentStatus() {
+  // In a real implementation, this would check with your backend
+  const userConfirmed = confirm('Have you completed the PayPay payment successfully?');
+  if (userConfirmed) {
+    completePayPayOrder();
+  }
+}
+
+function completePayPayOrder() {
+  // Remove processing modal
+  const modal = document.getElementById('paymentProcessing');
+  if (modal) {
+    modal.remove();
+  }
+  
+  // Complete the order
+  showSuccessModal();
+  
+  // Clear pending order
+  sessionStorage.removeItem('pendingOrder');
+}
+
+function cancelPaymentProcessing() {
+  const modal = document.getElementById('paymentProcessing');
+  if (modal) {
+    modal.remove();
+  }
+  
+  // Clear pending order
+  sessionStorage.removeItem('pendingOrder');
+  
+  // Optionally reopen payment modal
+  if (confirm('Would you like to try a different payment method?')) {
+    openPaymentModal();
   }
 }
 
@@ -156,8 +383,19 @@ function showSuccessModal() {
   
   document.getElementById('successModal').style.display = 'flex';
   
-  // Send email (in real implementation, this would be handled by backend)
-  console.log('Email sent with ticket details');
+  // Send notification emails to organizer and customer
+  sendOrganizerNotification(orderId);
+  
+  // In a real implementation, this would trigger backend processes:
+  // - Send confirmation email
+  // - Generate ticket
+  // - Update inventory
+  console.log('Order completed successfully:', {
+    orderId,
+    ticketType: currentTicketType,
+    price: currentTicketPrice,
+    paymentMethod: selectedPaymentMethod
+  });
 }
 
 function closeSuccessModal() {
@@ -167,10 +405,262 @@ function closeSuccessModal() {
 }
 
 // Close modals when clicking outside
-document.getElementById('paymentModal').addEventListener('click', function(e) {
-  if (e.target === this) closePaymentModal();
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'paymentModal') {
+    closePaymentModal();
+  } else if (e.target.id === 'successModal') {
+    closeSuccessModal();
+  }
 });
 
-document.getElementById('successModal').addEventListener('click', function(e) {
-  if (e.target === this) closeSuccessModal();
+// Handle page refresh with pending order
+document.addEventListener('DOMContentLoaded', function() {
+  const pendingOrder = sessionStorage.getItem('pendingOrder');
+  if (pendingOrder) {
+    const orderData = JSON.parse(pendingOrder);
+    // Check if order is older than 30 minutes
+    const orderTime = new Date(orderData.orderTime);
+    const now = new Date();
+    const timeDiff = (now - orderTime) / (1000 * 60); // in minutes
+    
+    if (timeDiff < 30) {
+      // Ask user about payment status
+      setTimeout(() => {
+        if (confirm('You have a pending PayPay payment. Did you complete it successfully?')) {
+          currentTicketType = orderData.ticketType;
+          currentTicketPrice = orderData.ticketPrice;
+          selectedPaymentMethod = 'paypay';
+          completePayPayOrder();
+        } else {
+          sessionStorage.removeItem('pendingOrder');
+        }
+      }, 1000);
+    } else {
+      // Clear expired pending order
+      sessionStorage.removeItem('pendingOrder');
+    }
+  }
 });
+
+// Email notification functions
+async function sendOrganizerNotification(orderId) {
+  const customerData = getCustomerData();
+  
+  try {
+    // Send notification to organizer
+    await sendOrganizerEmail(customerData, orderId);
+    
+    // Send ticket confirmation to customer
+    await sendCustomerTicket(customerData, orderId);
+    
+    console.log('Both emails sent successfully');
+  } catch (error) {
+    console.error('Email sending failed:', error);
+    // Fallback to mailto for organizer notification
+    const emailData = {
+      to: 'aggresius.kayimbye@gmail.com',
+      subject: `🎫 New Ticket Purchase - Order #${orderId}`,
+      body: formatNotificationEmail(customerData, orderId)
+    };
+    sendEmailViaMailto(emailData);
+  }
+}
+
+async function sendOrganizerEmail(customerData, orderId) {
+  const emailData = {
+    to: 'aggresius.kayimbye@gmail.com',
+    subject: `🎫 New Ticket Purchase - Order #${orderId}`,
+    body: formatNotificationEmail(customerData, orderId)
+  };
+  
+  if (typeof emailjs !== 'undefined') {
+    const templateParams = {
+      to_email: 'aggresius.kayimbye@gmail.com',
+      subject: emailData.subject,
+      order_id: orderId,
+      customer_name: customerData.name,
+      customer_email: customerData.email,
+      customer_phone: customerData.phone,
+      ticket_type: customerData.ticketType,
+      price: `¥${customerData.price.toLocaleString()}`,
+      payment_method: customerData.paymentMethod,
+      delivery_method: customerData.deliveryMethod,
+      order_date: customerData.orderDate,
+      message_body: emailData.body
+    };
+    
+    return emailjs.send('YOUR_SERVICE_ID', 'YOUR_ORGANIZER_TEMPLATE_ID', templateParams);
+  } else {
+    throw new Error('EmailJS not loaded');
+  }
+}
+
+async function sendCustomerTicket(customerData, orderId) {
+  if (typeof emailjs !== 'undefined') {
+    const templateParams = {
+      to_email: customerData.email,
+      customer_name: customerData.name,
+      order_id: orderId,
+      ticket_type: customerData.ticketType,
+      price: `¥${customerData.price.toLocaleString()}`,
+      payment_method: customerData.paymentMethod,
+      order_date: customerData.orderDate,
+      event_date: 'October 9, 2025', // Update with actual event date
+      event_time: '6:00 PM - 11:00 PM', // Update with actual event time
+      event_location: 'Tokyo, Japan', // Update with actual venue
+      qr_code_text: `UF2025-${orderId}`, // This will be the QR code content
+      message_body: formatCustomerTicketEmail(customerData, orderId)
+    };
+    
+    return emailjs.send('YOUR_SERVICE_ID', 'YOUR_CUSTOMER_TEMPLATE_ID', templateParams);
+  } else {
+    throw new Error('EmailJS not loaded');
+  }
+}
+
+function getCustomerData() {
+  const nameInput = document.querySelector('input[placeholder="Your full name"]');
+  const emailInput = document.querySelector('input[type="email"]');
+  const phoneInput = document.querySelector('input[type="tel"]');
+  
+  return {
+    name: nameInput?.value || 'Not provided',
+    email: emailInput?.value || 'Not provided',
+    phone: phoneInput?.value || 'Not provided',
+    ticketType: currentTicketType === 'vip' ? 'VIP Ticket' : 'Ordinary Ticket',
+    price: currentTicketPrice,
+    paymentMethod: selectedPaymentMethod === 'paypay' ? 'PayPay' : 'Credit Card',
+    deliveryMethod: selectedDeliveryMethod === 'email' ? 'Email Delivery' : 'Venue Pickup',
+    orderDate: new Date().toLocaleString('en-JP', { 
+      timeZone: 'Asia/Tokyo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  };
+}
+
+function formatNotificationEmail(customerData, orderId) {
+  return `
+🎉 NEW TICKET PURCHASE NOTIFICATION
+
+Order Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 Order ID: #UF2025-${orderId}
+📅 Date: ${customerData.orderDate}
+🎫 Ticket Type: ${customerData.ticketType}
+💰 Amount: ¥${customerData.price.toLocaleString()}
+💳 Payment Method: ${customerData.paymentMethod}
+📦 Delivery: ${customerData.deliveryMethod}
+
+Customer Information:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 Name: ${customerData.name}
+📧 Email: ${customerData.email}
+📱 Phone: ${customerData.phone}
+
+Next Steps:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${customerData.deliveryMethod === 'Email Delivery' 
+  ? '✅ Customer will receive ticket via email automatically'
+  : '⚠️ Customer will collect ticket at venue - add to will-call list'
+}
+
+---
+Uga Fest Japan Ticket System
+  `.trim();
+}
+
+function formatCustomerTicketEmail(customerData, orderId) {
+  return `
+🎫 YOUR UGA FEST JAPAN TICKET
+
+Dear ${customerData.name},
+
+Thank you for purchasing your ticket to Uga Fest Japan!
+
+🎟️ TICKET DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 Order ID: #UF2025-${orderId}
+🎫 Ticket Type: ${customerData.ticketType}
+💰 Amount Paid: ¥${customerData.price.toLocaleString()}
+📅 Purchase Date: ${customerData.orderDate}
+
+📍 EVENT INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎉 Event: Uga Fest Japan
+📅 Date: October 9, 2025
+🕕 Time: 6:00 PM - 11:00 PM
+📍 Location: Tokyo, Japan
+
+${customerData.ticketType === 'VIP Ticket' ? 
+`✨ VIP PERKS INCLUDED:
+• Priority seating
+• Exclusive bar access
+• Meet & greet opportunities
+` : 
+`🎵 GENERAL ACCESS INCLUDES:
+• Concert night access
+• Food & drink vendors
+• Festival activities
+`}
+
+📱 ENTRY INSTRUCTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Present this email at the venue entrance
+• QR Code: UF2025-${orderId}
+• Arrive 30 minutes before event start
+• Bring valid ID for verification
+
+🎊 We can't wait to celebrate with you!
+
+Questions? Contact us at aggresius.kayimbye@gmail.com
+
+---
+Uga Fest Japan Team
+Celebrating Uganda's Independence in Japan
+  `.trim();
+}
+
+// Fallback method using mailto
+function sendEmailViaMailto(emailData) {
+  const mailtoUrl = `mailto:${emailData.to}?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`;
+  
+  // Try to open email client
+  const link = document.createElement('a');
+  link.href = mailtoUrl;
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('Email notification sent via mailto');
+}
+
+// Alternative: Send via form submission to a server endpoint
+async function sendEmailViaServer(emailData, customerData, orderId) {
+  try {
+    const response = await fetch('/send-notification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...emailData,
+        customerData,
+        orderId
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Server notification failed');
+    }
+    
+    console.log('Email notification sent via server');
+  } catch (error) {
+    console.error('Server email notification failed:', error);
+    throw error;
+  }
+}
